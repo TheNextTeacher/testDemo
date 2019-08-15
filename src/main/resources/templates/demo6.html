@@ -1,0 +1,1147 @@
+
+
+
+
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>北京市资格考试证书管理系统</title>
+    <script type="text/javascript" src="/zsmanage/webjars/jquery/1.12.4/jquery.min.js"></script>
+    <script type="text/javascript" src="/zsmanage/js/jqueryPlus.js"></script>
+    <script src="/zsmanage/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="/zsmanage/js/bootstrap-table-1.11.0/bootstrap-table.js"></script>
+    <script src="/zsmanage/js/bootstrap-table-1.11.0/locale/bootstrap-table-zh-CN.js"></script>
+    <script type='text/javascript' src="/zsmanage/js/jquery-validation-1.16.0/jquery.validate.js"></script>
+    <script type='text/javascript' src="/zsmanage/js/jquery-validation-1.16.0/localization/messages_zh.js"></script>
+    <script type='text/javascript' src="/zsmanage/webjars/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
+    <script type='text/javascript' src="/zsmanage/webjars/bootstrap-datepicker/1.6.4/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <script src="/zsmanage/js/popup.js"></script>
+    <script src="/zsmanage/js/jquery.form.js"></script>
+    <script type="text/javascript">
+        var ctx='/zsmanage';
+
+
+        $(function() {
+            $.ajaxSetup({
+                cache:false,
+                complete:function(xhr, textStatus){
+                    if(this.type=='POST'){
+                    }
+                },
+                beforeSend:function(xhr){
+                    if(this.type=='POST'){
+
+                    }
+                    return;
+                },
+                error : function(xhr, textStatus, errorThrown){
+                    //长时间不访问，造成状态是UNSENT或者OPENED
+                    if(xhr.status==0){
+
+                    }else if(xhr.status==403){
+                        alert(msg="权限不足");
+                    }else if(xhr.status==605){
+                        alert(msg="您的账号已从别处登录,请重新登陆系统");
+                        document.location.href=ctx+"/login/auth";
+                    }else if(xhr.status==606){
+                        alert(msg="当前浏览器您已登录,请直接使用系统");
+                        document.location.href=ctx+"/workspace/index";
+                    }else{
+
+                    }
+                    return;
+                },
+                traditional : true
+            });
+
+            //加载当前系统内登录用户列表
+
+        });
+        function centerLoad(url) {
+            var obj={};
+            $.post(ctx+url, obj,
+                function(data, status) {
+                    $("#layoutMainTabs").html('');
+                    $("#layoutMainTabs").html(data);
+                    initBootstrapPlugin();
+                }, "html");
+        }
+        function initBootstrapPlugin(){
+            if($(".selectpicker").length > 0){
+                $(".selectpicker").selectpicker();
+            }
+            $( ".datepicker" ).datepicker({language: 'zh-CN',autoclose: true,format: 'yyyy-mm-dd'});
+        }
+        JSON.unflatten = function(data) {
+            "use strict";
+            if (Object(data) !== data || Array.isArray(data))
+                return data;
+            var regex = /\.?([^.\[\]]+)|\[(\d+)\]/g,
+                resultholder = {};
+            for (var p in data) {
+                var cur = resultholder,
+                    prop = "",
+                    m;
+                while (m = regex.exec(p)) {
+                    cur = cur[prop] || (cur[prop] = (m[2] ? [] : {}));
+                    prop = m[2] || m[1];
+                }
+                cur[prop] = data[p];
+            }
+            return resultholder[""] || resultholder;
+        };
+        JSON.flatten = function(data) {
+            var result = {};
+            function recurse (cur, prop) {
+                if (Object(cur) !== cur) {
+                    result[prop] = cur;
+                } else if (Array.isArray(cur)) {
+                    for(var i=0, l=cur.length; i<l; i++)
+                        recurse(cur[i], prop + "[" + i + "]");
+                    if (l == 0)
+                        result[prop] = [];
+                } else {
+                    var isEmpty = true;
+                    for (var p in cur) {
+                        isEmpty = false;
+                        recurse(cur[p], prop ? prop+"."+p : p);
+                    }
+                    if (isEmpty && prop)
+                        result[prop] = {};
+                }
+            }
+            recurse(data, "");
+            return result;
+        }
+    </script>
+    <!-- end  bootstrap  -->
+    <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="/zsmanage/js/html5/html5.js"></script>
+    <![endif]-->
+
+    <link rel="icon" href="/zsmanage/images/favicon.ico" />
+
+    <!-- The charisma styles -->
+    <link id="bs-css" href="/zsmanage/js/charisma/css/bootstrap-cerulean.min.css" rel="stylesheet">
+
+    <link href="/zsmanage/js/charisma/css/charisma-app.css" rel="stylesheet">
+    <link href="/zsmanage/js/charisma/bower_components/chosen/chosen.min.css" rel='stylesheet'>
+
+    <link href="/zsmanage/js/charisma/css/animate.min.css" rel='stylesheet'>
+    <!-- end The charisma styles -->
+
+    <!--  The charisma js -->
+
+    <!-- library for cookie management -->
+    <script src="/zsmanage/js/charisma/js/jquery.cookie.js"></script>
+
+    <!-- select or dropdown enhancer -->
+    <script src="/zsmanage/js/charisma/bower_components/chosen/chosen.jquery.min.js"></script>
+
+    <!-- library for making tables responsive -->
+    <script src="/zsmanage/js/charisma/bower_components/responsive-tables/responsive-tables.js"></script>
+
+
+    <!-- history.js for cross-browser state change on ajax -->
+    <script src="/zsmanage/js/charisma/js/jquery.history.js"></script>
+
+    <!-- application script for Charisma demo -->
+    <script src="/zsmanage/js/charisma/js/charisma.js"></script>
+
+    <!-- end The charisma js -->
+    <script type='text/javascript' src='/zsmanage/js/menu.js'></script>
+
+
+
+    <meta name="layout" content="main">
+    <style>
+        .table {
+            table-layout: fixed;
+        }
+
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+
+        .select,
+        #locale {
+            width: 100%;
+        }
+
+        .like {
+            margin-right: 10px;
+        }
+
+        .wrapper {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+
+        .signature-pad {
+            position: relative;
+            left: 0;
+            top: 0;
+            width: 600px;
+            height: 600px;
+        }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+
+    <SCRIPT type=text/javascript>
+
+        $(function(){
+            initMenu();
+        });
+        function initMenu(){
+            jQuery("#kwmenu").supersubs({
+                minWidth:    12, extraWidth:  1
+            }).superfish({useClick:true});
+        }
+
+        function logout(){
+            if(confirm("确认退出登录？")){
+                window.location.href = "/logout";
+            }
+        }
+
+    </SCRIPT>
+    <style type="text/css">
+        .fr{float:right;}
+        .fl{float:left;}
+        div p{ padding:0px; margin:0px;}
+        ul li{ padding:0px; margin:0px; list-style:none;}
+        .head_top{ background:url(/zsmanage/images/right_02.jpg) repeat; width:950px; margin:0px auto;color:#fff; font-weight:bold;position:relative;height:120px;}
+        .head_top .part_01{float:left;width:930px; background:url(/zsmanage/images/left_01.jpg) no-repeat 0 0; height:19px; padding:78px 0 0 15px; display:inline;}
+        .head_top .part_02{float:left; width:420px;height:19px; padding:78px 20px 0 0px; display:inline; text-align:right;}
+        .head_top span{ padding:0 6px;}
+        .head_top span a:link{ color:#fff;}
+        .head_top span a:visited{ color:#fff;}
+        .head_top span a:hover{ color:#F60;}
+        .head_top span a:active{ color:#fff;}
+        .mean_top{ z-index:10; position:relative;width:950px; margin:0 auto; height:30px; background:url(/zsmanage/images/daohang_03.jpg); position:relative;clear:both;}
+        .mean_top ul li{
+            POSITION: relative; TEXT-ALIGN: center; FLOAT: left
+        }
+        .mean_top ul  LI A:link {
+            PADDING-LEFT: 10px; WIDTH: 64px; DISPLAY: block; FONT-SIZE: 12px; FONT-WEIGHT: bold;TEXT-DECORATION: none;
+        }
+
+        /*** ESSENTIAL STYLES ***/
+        .sf-menu, .sf-menu * {
+            margin:			0;
+            padding:		0;
+            list-style:		none;
+        }
+        .sf-menu {
+            line-height:	1.0;
+        }
+        .sf-menu ul {
+            position:		absolute;
+            top:			-999em;
+            width:			10em; /* left offset of submenus need to match (see below) */
+            background:#011d37;
+        }
+        .sf-menu ul li {
+            width:			100%;
+        }
+        .sf-menu li:hover {
+            visibility:		inherit; /* fixes IE7 'sticky bug' */
+            color:#13a;
+        }
+        .sf-menu li {
+            float:			left;
+            position:		relative;
+        }
+        .sf-menu a {
+            display:		block;
+            position:		relative;
+        }
+        .sf-menu li:hover ul,
+        .sf-menu li.sfHover ul {
+            left:			0;
+            top:			2.1em; /* match top ul list item height */
+            z-index:		99;
+        }
+        ul.sf-menu li:hover li ul,
+        ul.sf-menu li.sfHover li ul {
+            top:			-999em;
+        }
+        ul.sf-menu li li:hover ul,
+        ul.sf-menu li li.sfHover ul {
+            left:			10em; /* match ul width */
+            top:			0;
+        }
+        ul.sf-menu li li:hover li ul,
+        ul.sf-menu li li.sfHover li ul {
+            top:			-999em;
+        }
+        ul.sf-menu li li li:hover ul,
+        ul.sf-menu li li li.sfHover ul {
+            left:			10em; /* match ul width */
+            top:			0;
+        }
+
+        /*** DEMO SKIN ***/
+        .sf-menu {
+            float:			left;
+            /*margin-bottom:	1em;*/
+        }
+        .sf-menu a {
+
+            padding: 		.5em 1.6em;
+            text-decoration:none;
+            color:#13a;
+        }
+        .sf-menu a, .sf-menu a:visited  { /* visited pseudo selector so IE6 applies text colour*/
+            color:#fff;
+        }
+        .sf-menu li {
+            /*background:		#BDD2FF;*/
+        }
+        .sf-menu li li {
+            background:		#015483
+        }
+        .sf-menu li li li {
+            background:		#9AAEDB;
+        }
+        .sf-menu li:hover, .sf-menu li.sfHover,
+        .sf-menu a:focus, .sf-menu a:hover, .sf-menu a:active {
+
+            outline:		0;
+        }
+
+        /*** arrows **/
+        .sf-menu a.sf-with-ul {
+            min-width:		1px; /* trigger IE7 hasLayout so spans position accurately */
+        }
+        .sf-sub-indicator {
+            position:		absolute;
+            display:		block;
+            right:			.75em;
+            top:			1.05em; /* IE6 only */
+            width:			10px;
+            height:			10px;
+            text-indent: 	-999em;
+            overflow:		hidden;
+            background:		url('/zsmanage/images/arrows-ffffff.png') no-repeat -10px -100px; /* 8-bit indexed alpha png. IE6 gets solid image only */
+        }
+        a > .sf-sub-indicator {  /* give all except IE6 the correct values */
+            top:			.8em;
+            background-position: 0 -100px; /* use translucent arrow for modern browsers*/
+        }
+        /* apply hovers to modern browsers */
+        a:focus > .sf-sub-indicator,
+        a:hover > .sf-sub-indicator,
+        a:active > .sf-sub-indicator,
+        li:hover > a > .sf-sub-indicator,
+        li.sfHover > a > .sf-sub-indicator {
+            background-position: -10px -100px; /* arrow hovers for modern browsers*/
+        }
+
+        /* point right for anchors in subs */
+        .sf-menu ul .sf-sub-indicator { background-position:  -0px 0; }
+        .sf-menu ul a > .sf-sub-indicator { background-position:  0 0; }
+        /* apply hovers to modern browsers */
+        .sf-menu ul a:focus > .sf-sub-indicator,
+        .sf-menu ul a:hover > .sf-sub-indicator,
+        .sf-menu ul a:active > .sf-sub-indicator,
+        .sf-menu ul li:hover > a > .sf-sub-indicator,
+        .sf-menu ul li.sfHover > a > .sf-sub-indicator {
+            background-position: -10px 0; /* arrow hovers for modern browsers*/
+        }
+
+        /*** shadows for all but IE6 ***/
+        .sf-shadow ul {
+            background:#011d37	url('/zsmanage/images/shadow.png') no-repeat bottom right;
+            padding: 0 8px 9px 0;
+            -moz-border-radius-bottomleft: 17px;
+            -moz-border-radius-topright: 17px;
+            -webkit-border-top-right-radius: 17px;
+            -webkit-border-bottom-left-radius: 17px;
+        }
+        .sf-shadow ul.sf-shadow-off {
+            background: transparent;
+        }
+        .container {
+            width: 950px;
+        }
+        /* Title.css */
+        .Title1{ width:100%;}
+        .Title1 span{  width:13px; background:url(/zsmanage/images/left_03.gif) no-repeat; height:28px; float:left;}
+        .Title1 p{ background:url(/zsmanage/images/mid_05.gif) repeat-x;height:28px; margin:0 10px 0 13px; position:relative; z-index:1;}
+        .Title1 font{width:10px; background:url(/zsmanage/images/right_07.gif) no-repeat;height:28px; float:right; margin-top:-28px;}
+        .Title1 p span{float:left; background:url(/zsmanage/images/btn_10.gif) no-repeat 4px;height:28px;color:#fff; width:50%;line-height:28px; font-weight:bold; padding-left:27px;}
+        .Title1 p font{ background:none; width:40%;top:29px;#top:27px; right:0; text-align:right; position:absolute;}
+        .header{position: relative;}
+        .header a{position: absolute;right:10px;bottom:10px;display:inline-block;color:#fff;text-decoration: underline;}
+    </style>
+    <script type="text/javascript" src="/zsmanage/js/bofei/BupAuth.js"></script>
+</head>
+<body>
+
+
+<div class="header"><img src="/zsmanage/images/top.png" height="97" width="1000"><a href="/zsmanage/logout">退出</a></div>
+<div class="menu">
+    <ul class="sf-menu"  id="kwmenu">
+
+        <li top="1">
+            <a href="#">电子证书管理</a>
+
+
+
+
+
+
+
+
+            <ul style=" padding:0px;">
+
+                <li><a perValue="/zsKszsb/index"
+                       href="/zsmanage/zsKszsb/index">电子签章及数据发布</a>
+
+
+
+
+
+
+                </li>
+
+                <li><a perValue="/zsKszswjb/index"
+                       href="/zsmanage/zsKszswjb/index">查询签章情况</a>
+
+
+
+
+
+
+                </li>
+
+                <li><a perValue="/zsZtcx/index"
+                       href="/zsmanage/zsZtcx/index">查询证书状态</a>
+
+
+
+
+
+
+                </li>
+
+            </ul>
+
+
+
+
+        </li>
+
+        <li top="1">
+            <a href="#">邮寄证书管理</a>
+
+
+
+
+
+
+
+
+            <ul style=" padding:0px;">
+
+                <li><a perValue="/zsYj/index"
+                       href="/zsmanage/zsYj/index">证书分拣及发放</a>
+
+
+
+
+
+
+                </li>
+
+            </ul>
+
+
+
+
+        </li>
+
+        <li top="1">
+            <a href="#">字典表管理</a>
+
+
+
+
+
+
+
+
+            <ul style=" padding:0px;">
+
+                <li><a perValue="/zsKsmcb/index"
+                       href="/zsmanage/zsKsmcb/index">资格考试名称</a>
+
+
+
+
+
+
+                </li>
+
+                <li><a perValue="/zsKsnyb/index"
+                       href="/zsmanage/zsKsnyb/index">考试历史记录</a>
+
+
+
+
+
+
+                </li>
+
+            </ul>
+
+
+
+
+        </li>
+
+        <li top="1">
+            <a href="#">证书数据导入</a>
+
+
+
+
+
+
+
+
+            <ul style=" padding:0px;">
+
+                <li><a perValue="/zsKszsbTemp/index"
+                       href="/zsmanage/zsKszsbTemp/index">证书数据导入 </a>
+
+
+
+
+
+
+                </li>
+
+                <li><a perValue="/zsDrpcb/index"
+                       href="/zsmanage/zsDrpcb/index">导入记录</a>
+
+
+
+
+
+
+                </li>
+
+            </ul>
+
+
+
+
+        </li>
+    </ul>
+</div>
+<div class="main">
+
+    <div class="current">当前位置：证书现场发放</div>
+
+    <div class="modal-body">
+        <div class="form-group">
+            <input type="hidden" id="giveId">
+        </div>
+        <div class="wrapper">
+            <canvas id="signature-pad" class="signature-pad" width=400 height=200></canvas>
+        </div>
+        <div>
+            <button id="save">Save</button>
+            <button id="clear">Clear</button>
+        </div>
+        <div id="myCarousel" class="carousel slide">
+            <!-- 轮播（Carousel）指标 -->
+            <ol class="carousel-indicators">
+                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarousel" data-slide-to="1"></li>
+                <li data-target="#myCarousel" data-slide-to="2"></li>
+            </ol>
+            <!-- 轮播（Carousel）项目 -->
+            <div class="carousel-inner">
+                <div class="item active">
+                    a
+                </div>
+                <div class="item">
+                    b
+                </div>
+                <div class="item">
+                    c
+                </div>
+            </div>
+
+            <!-- 轮播（Carousel）导航 -->
+            <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        var $table = $('#table')
+        var $histable = $('#histable')
+        var selections = []
+        var signaturePad = new SignaturePad(document.getElementById('signature-pad'), {
+            backgroundColor: 'rgba(255, 255, 255, 0)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+        var saveButton = document.getElementById('save');
+        var cancelButton = document.getElementById('clear');
+
+        saveButton.addEventListener('click', function (event) {
+            var data = signaturePad.toDataURL('image/png');
+            console.log(data);
+// Send data to server instead...
+            window.open(data);
+        });
+
+        cancelButton.addEventListener('click', function (event) {
+            signaturePad.clear();
+        });
+
+        /*全局加载功能*/
+        $(function () {
+            $('#funcBtn').hide();
+            $('#zsHisTable').bootstrapTable('destroy');
+            $("#lsksmc").empty();
+            $("#lsksmc").append("<option value=''>请选择</option>")
+            $.ajax({
+                url: "/zsmanage/zsKszswjb/ksmcJson",
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#lsksmc").append("<option value='" + data[i].KSDM + "'>" + data[i].LSKSMC + "</option>")
+                    }
+                },
+                async: false
+            });
+            $(".datepickerMonth").datepicker({
+                startView: 0,
+                minViewMode: 0,
+                language: "zh-CN",
+                autoclose: true,//选中之后自动隐藏日期选择框
+                clearBtn: true,//清除按钮
+                format: "yyyy-mm-dd",//日期格式
+
+            });
+
+            $("#lsksmc").selectpicker({
+                width: 500
+            })
+            $("#ksny").selectpicker({
+                width: 196
+            })
+            $("#lqzt").selectpicker({
+                width: 196
+            })
+            $("#rkzt").selectpicker({
+                width: 196
+            })
+            $("#fjzt").selectpicker({
+                width: 196
+            })
+            $("#lqfs").selectpicker({
+                width: 196
+            })
+        })
+
+        function queryParams(params) {
+            var ksmc = $("#lsksmc").val();
+            var ksny = $("#ksny").val();
+            var xm = $("#xm").val();
+            var zjhm = $("#zjhm").val();
+            var lqfs = $("#lqfs").val();
+            var lqzt = $("#lqzt").val();
+            var rkzt = $("#rkzt").val();
+            var fjzt = $("#fjzt").val();
+            var zgmc = $("#zgmc").val();
+            var hisId = $('#hisId').val();
+            offset = params.offset;
+            max = params.limit;
+            return {
+                max: max,
+                offset: offset,
+                ksmc: ksmc,
+                ksny: ksny,
+                xm: xm,
+                zjhm: zjhm,
+                lqfs: lqfs,
+                lqzt: lqzt,
+                rkzt: rkzt,
+                fjzt: fjzt,
+                zgmc: zgmc,
+                hisId: hisId
+            };
+
+        }
+
+        function queryHisParams(params) {
+            var hisId = $('#hisId').val();
+            offset = params.offset;
+            max = params.limit;
+            return {
+                max: max,
+                offset: offset,
+                hisId: hisId
+            };
+
+        }
+
+        $('#lqzt').change(function () {
+            var lqzt = $('#lqzt option:selected').val();
+            var lqfs = $('#lqfs option:selected').val();
+            if (lqfs == 1) {
+                return;
+            }
+            if (lqzt == 10) {
+                $('#rkzt').selectpicker('val', '10');
+                $('#fjzt').selectpicker('val', '10');
+            }
+            if (lqzt != 10) {
+                $('#rkzt').selectpicker('val', '0');
+                $('#fjzt').selectpicker('val', '0');
+            }
+        });
+        $('#rkzt').change(function () {
+            var rkzt = $('#rkzt option:selected').val();
+            var lqzt = $('#lqzt option:selected').val();
+            if (rkzt == 10) {
+                $('#fjzt').selectpicker('val', '10');
+                $('#lqzt').selectpicker('val', '10');
+            }
+            if (rkzt != 10) {
+                $('#fjzt').selectpicker('val', '0');
+                if (lqzt == 10) {
+                    $('#lqzt').selectpicker('val', ['noneSelectedText'])
+                }
+            }
+        });
+        $('#fjzt').change(function () {
+            var fjzt = $('#fjzt option:selected').val();
+            var lqzt = $('#lqzt option:selected').val();
+            console.log("lqzt" + lqzt)
+            if (fjzt == 10) {
+                $('#rkzt').selectpicker('val', '10');
+                $('#lqzt').selectpicker('val', '10');
+            }
+            if (fjzt != 10) {
+                $('#rkzt').selectpicker('val', '0');
+                if (lqzt == 10) {
+                    $('#lqzt').selectpicker('val', ['noneSelectedText'])
+                }
+            }
+        });
+        $('#lqfs').change(function () {
+            var lqfs = $('#lqfs option:selected').val();
+            if (lqfs == 1) {
+                $('#rkzt').selectpicker('val', ['noneSelectedText'])
+                $('#fjzt').selectpicker('val', ['noneSelectedText'])
+                $('#rkzt').prop('disabled', true);
+                $('#rkzt').selectpicker('refresh');
+                $('#fjzt').prop('disabled', true);
+                $('#fjzt').selectpicker('refresh');
+            } else {
+                $('#rkzt').prop('disabled', false);
+                $('#rkzt').selectpicker('refresh');
+                $('#fjzt').prop('disabled', false);
+                $('#fjzt').selectpicker('refresh');
+            }
+            if (lqfs != 2) {
+                $('#funcBtn').hide();
+            } else {
+                $('#funcBtn').show();
+            }
+
+        });
+        //开始时间
+        $('#qsny').datepicker({
+            language: "zh-CN",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true,
+            format: "yyyymmdd",
+            clearBtn: true,
+            minView: "month"
+            //当前时间
+            // endDate : new Date()
+        }).on('changeDate', function (e) {
+            var startTime = e.date;
+            $('#jsny').datepicker('setStartDate', startTime);
+        });
+        //结束时间：
+        $('#jsny').datepicker({
+            language: "zh-CN",
+            todayBtn: "linked",
+            autoclose: true,
+            todayHighlight: true,
+            format: "yyyymmdd",
+            clearBtn: true,
+            minView: "month"
+            //当前时间
+            // endDate : new Date()
+        }).on('changeDate', function (e) {
+            var endTime = e.date;
+            $('#qsny').datepicker('setEndDate', endTime);
+        });
+
+        function changeLsksmc() {
+            var lsksmc = $("#lsksmc").find("option:selected").text();
+            $("#ksny").empty();
+            // $("#ksny").append("<option value=''>全部年月</option>");
+            $.ajax({
+                url: "/zsmanage/zsKszswjb/ksnyJson",
+                data: {lsksmc: lsksmc},
+                success: function (data) {
+                    for (var i = 0; i < data.length; i++) {
+                        $("#ksny").append("<option>" + data[i].KSNY + "</option>");
+                    }
+                },
+                async: false
+            });
+            // $('#ksny').selectpicker('render');
+            $('#ksny').selectpicker('refresh');
+        }
+
+        function destroy() {
+            $table.bootstrapTable('destroy')
+        }
+
+        function destroyHis() {
+            $histable.bootstrapTable('destroy')
+        }
+
+        function getIdSelections() {
+            return $.map($table.bootstrapTable('getSelections'), function (row) {
+                return row
+            })
+        }
+
+        function responseHandler(res) {
+            $.each(res.rows, function (i, row) {
+                row.state = $.inArray(row.id, selections) !== -1
+            })
+            return res
+        }
+
+        function operateFormatter(value, row, index) {
+            //此处根据row内容添加是否出现功能校验
+            var btn = '<table>';
+            var giveBtn = '<th><button type="button" class="giveBtn form-control" data-toggle="modal" data-target="#giveModal"  style="margin-left: 0px;background: #0ce6a0;color:rgb(255,255,255);text-align: center;width: 90px">现场发放</button></th>'
+            var hisBtn = '<th><button type="button" class="hisBtn form-control" data-toggle="modal" data-target="#hisModal" style="margin-left: 0px;background: #e6e459;color:rgb(255,255,255);text-align: center;width: 90px">操作历史</button></th>'
+            var remarkBtn = '<th><button type="button" class="remarkBtn form-control"  data-toggle="modal" data-target="#remarkModal" style="margin-left: 0px;background: #1db5e6;color:rgb(255,255,255);text-align: center;width: 80px">备注</button></th>'
+            if (row.LQFS == 1) {
+                btn = btn + giveBtn + hisBtn;
+            }
+            if (row.LQFS == 2) {
+                btn = btn + hisBtn + remarkBtn;
+            }
+            btn = btn + '</table>';
+            return [
+                btn
+            ].join('')
+        }
+
+        /*功能事件*/
+        window.operateEvents = {
+            'click .giveBtn': function (e, value, row, index) {
+                $.get(ctx + "/zsYj/editZs", {"idArray": [row.ID],});
+            },
+            'click .remarkBtn': function (e, value, row, index) {
+                $('#remarkModal').find('#remarkModalLable1').text(row.XM + "的" + row.ZGMC);
+                $('#remarkTextarea').val(row.BZ);
+                $('#bzId').val(row.ID);
+            },
+            'click .hisBtn': function (e, value, row, index) {
+                $('#hisModal').find('#hisModalLable1').text(row.XM + "的" + row.ZGMC + "操作历史");
+                $('#hisId').val(row.ID);
+                initHisTable()
+                $('#locale').change(initHisTable)
+                $('#histable').bootstrapTable('selectPage', [offset = 1])
+            }
+        }
+        $('.clsBtn').click(function () {
+            $('#lsksmc').selectpicker('val', ['noneSelectedText'])
+            $('#ksny').selectpicker('val', ['noneSelectedText'])
+            $('#lqfs').selectpicker('val', ['noneSelectedText'])
+            $('#lqzt').selectpicker('val', ['noneSelectedText'])
+            $('#rkzt').selectpicker('val', ['noneSelectedText'])
+            $('#fjzt').selectpicker('val', ['noneSelectedText'])
+            $('#rkzt').prop('disabled', false);
+            $('#rkzt').selectpicker('refresh');
+            $('#fjzt').prop('disabled', false);
+            $('#fjzt').selectpicker('refresh');
+            $('#funcBtn').hide();
+            $("#xm").val("");
+            $("#zjhm").val("");
+            $("#zgmc").val("");
+        })
+        $('.saveRemarkBtn').click(function (e, value, index) {
+            var remark = $('#remarkTextarea').val();
+            var id = $('#bzId').val();
+            console.log(remark);
+            $.post(ctx + "/zsYj/updateBz", {"idArray": [id], "bz": remark},
+                function (data, textStatus) {
+                    if (data.result) {
+                        $("#remarkModal").modal('hide');
+                        $('#table').bootstrapTable('refresh', []);
+                    } else {
+                        alert("保存失败！");
+                    }
+                }, "json");
+        })
+        $('.clsLs').click(function () {
+            $('#hisId').val("");
+        })
+        $('#importBtn').click(function () {
+            var beginTime = $('#qsny').val();
+            var endTime = $('#jsny').val();
+            window.location.href = "/zsmanage/zsYj/download?beginTime=" + beginTime + "&&endTime=" + endTime;
+        })
+        $('#fjBtn').click(function () {
+            var rows = getIdSelections();
+            var isWrong = false;
+            rows.forEach(function (value) {
+                if (value.LQZT == 10) {
+                    isWrong = true;
+                }
+            });
+            if (isWrong) {
+                alert("您所选数据中含有领取方式为现场的数据或已领取，不能分拣！");
+                return;
+            }
+            updateZs(10);
+        });
+        $('#cxfjBtn').click(function () {
+            var rows = getIdSelections();
+            var isWrong = false;
+            rows.forEach(function (value) {
+                if (value.LQZT == 0) {
+                    isWrong = true;
+                }
+            });
+            if (isWrong) {
+                alert("您所选数据中含有领取方式为现场的数据或证书未领取，不用撤销分拣！");
+                return;
+            }
+            updateZs(0);
+        });
+
+        function updateZs(type) {
+            var rows = getIdSelections();
+            var ids = [];
+            rows.forEach(function (value) {
+                ids.push(value.ID)
+            });
+            $.post(ctx + "/zsYj/updateZt", {"idArray": ids, "lqzt": type},
+                function (data, textStatus) {
+                    if (data.result) {
+                        alert("保存成功！");
+                        $('#table').bootstrapTable('refresh', []);
+                    } else {
+                        alert("保存失败！");
+                    }
+                }, "json");
+        }
+
+        $('#searchZSList').click(function () {
+            initTable()
+            $('#locale').change(initTable)
+            $('#table').bootstrapTable('selectPage', [offset = 1])
+        });
+
+        function initHisTable() {
+            $histable.bootstrapTable('destroy').bootstrapTable({
+                locale: $('#locale').val(),
+                columns: [
+                    [{
+                        title: '领取状态',
+                        field: 'lqzt',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 150
+                    }, {
+                        title: '操作人',
+                        field: 'czr',
+                        align: 'center',
+                        width: 100
+                    }, {
+                        title: '操作时间',
+                        field: 'czsj',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 150
+                    }, {
+                        title: '变化前',
+                        field: 'bdq',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '变化后',
+                        field: 'bdh',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '备注',
+                        field: 'bz',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }
+                    ], []
+                ]
+            })
+        }
+
+        function initTable() {
+            $table.bootstrapTable('destroy').bootstrapTable({
+                locale: $('#locale').val(),
+                columns: [
+                    [
+                        {
+                            field: 'state',
+                            checkbox: true,
+                            rowspan: 2,
+                            align: 'center',
+                            valign: 'middle'
+                        }, {
+                        title: '序号',
+                        field: 'num',
+                        formatter: function (value, row, index) {
+                            return index + 1;
+                        },
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 60
+                    }, {
+                        title: '邮件号',
+                        field: 'YJH',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 150
+                    }, {
+                        title: '姓名',
+                        field: 'XM',
+                        align: 'center',
+                        width: 100
+                    }, {
+                        title: '证件号码',
+                        field: 'ZJHM',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 150
+                    }, {
+                        title: '资格证书名称',
+                        field: 'ZGMC',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '领取方式',
+                        field: 'LQFS',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '领取状态',
+                        field: 'LQZT',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '入库状态',
+                        field: 'LQZT',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '分拣状态',
+                        field: 'LQZT',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '分拣时间',
+                        field: 'FJSJ',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '分拣人',
+                        field: 'FJR',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        title: '备注',
+                        field: 'BZ',
+                        rowspan: 2,
+                        align: 'center',
+                        valign: 'middle',
+                        width: 100
+                    }, {
+                        field: 'operate',
+                        title: '证书操作',
+                        align: 'center',
+                        events: window.operateEvents,
+                        formatter: operateFormatter,
+                        width: 300
+                    },
+                    ], []
+                ]
+            })
+            $table.on('check.bs.table uncheck.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table',
+                function () {
+                    selections = getIdSelections()
+                })
+            $table.on('all.bs.table', function (e, name, args) {
+                console.log(name, args)
+            })
+        }
+    </script>
+
+</div>
+<div class="footer">
+    版权所有 北京市人事考试中心 北京市资格考试证书管理系统 未经许可 不得转载
+</div>
+
+
+
+</body>
+</html>
